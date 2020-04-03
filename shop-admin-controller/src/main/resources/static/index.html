@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<title>月月家</title>
+	<!-- Meta tag Keywords -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8" />
+	<meta name="keywords" content=""
+	/>
+	<script>
+		addEventListener("load", function () {
+			setTimeout(hideURLbar, 0);
+		}, false);
+
+		function hideURLbar() {
+			window.scrollTo(0, 1);
+		}
+	</script>
+	<!-- Meta tag Keywords -->
+	<!-- css files -->
+	<link rel="stylesheet" href="layuiadmin/layui/css/layui.css">
+	<link rel="stylesheet" href="login/css/style.css" type="text/css" media="all" />
+	<!-- Style-CSS -->
+	<link rel="stylesheet" href="login/css/fontawesome-all.css">
+
+	<!-- Font-Awesome-Icons-CSS -->
+	<!-- //css files -->
+	<!-- web-fonts -->
+	<link href="http://maxcdn.bootstrapcdn.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+	<link href="http://maxcdn.bootstrapcdn.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+	<!-- //web-fonts -->
+</head>
+
+<body>
+	<!-- bg effect -->
+	<div id="bg">
+		<canvas></canvas>
+		<canvas></canvas>
+		<canvas></canvas>
+	</div>
+	<!-- //bg effect -->
+	<!-- title -->
+	<h1>YUE YUE HOME</h1>
+	<!-- //title -->
+	<!-- content -->
+	<div class="sub-main-w3">
+		<form class="layui-form" method="post">
+			<h2>Login Now
+<!--				<i class="fas fa-level-down-alt"></i>-->
+			</h2>
+			<div class="form-style-agile">
+				<label>
+					<i class="fas fa-user"></i>
+					Username
+				</label>
+				<input placeholder="Username" name="username" type="text"  required  lay-verify="required">
+			</div>
+			<div class="form-style-agile">
+				<label>
+					<i class="fas fa-unlock-alt"></i>
+					Password
+				</label>
+				<input placeholder="Password" name="password" type="password" required  lay-verify="required">
+			</div>
+			<!-- checkbox -->
+<!--			<div class="wthree-text">-->
+<!--				<ul>-->
+<!--					<li>-->
+<!--						<label class="anim">-->
+<!--							<input type="checkbox" class="checkbox" required="">-->
+<!--							<span>Stay Signed In</span>-->
+<!--						</label>-->
+<!--					</li>-->
+<!--					<li>-->
+<!--						<a href="#">Forgot Password?</a>-->
+<!--					</li>-->
+<!--				</ul>-->
+<!--			</div>-->
+			<!-- //checkbox -->
+			<input type="submit" lay-submit lay-filter="loginBtn" value="Log In">
+		</form>
+	</div>
+	<!-- //content -->
+
+	<!-- copyright -->
+	<div class="footer">
+		<p>Copyright &copy; 2018.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+	</div>
+	<!-- //copyright -->
+
+	<!-- Jquery -->
+	<script src="login/js/jquery-3.3.1.min.js"></script>
+	<!-- //Jquery -->
+	<!-- effect js -->
+	<script src="login/js/canva_moving_effect.js"></script>
+	<!-- //effect js -->
+
+
+	<script src="layuiadmin/layui/layui.all.js"></script>
+	<script>
+		//一般直接写在一个js文件中
+		layui.use(['layer', 'form','jquery'], function(){
+			var layer = layui.layer;
+			var form = layui.form;
+			var $ = layui.jquery;
+
+			//监听提交
+			form.on('submit(loginBtn)', function(data){
+
+				$.post("user/login",data.field,
+						function(res){
+					console.log(res)
+							if(res.status==200){
+								layer.msg('登录成功',{icon: 1,time: 1000},function(){
+									console.log(document.referrer)
+									//window.location.href=document.referrer;
+									window.location.href='/admin/index.html'
+								});
+							}else{
+								layer.msg(res.msg,{icon: 5,time: 2000});
+							}
+						});
+				return false;
+			});
+		});
+	</script>
+</body>
+
+</html>

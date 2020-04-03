@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>月月家</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/layui/icon/icon.css" media="all">
+    <link rel="stylesheet" href="../../css/main.css" media="all" />
+    <style>
+        .layui-table .layui-table-cell{
+            height:auto;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:normal;
+        }
+        .view{
+            white-space:nowrap;
+            text-overflow:ellipsis;
+        }
+    </style>
+</head>
+<body class="childrenBody">
+
+<form class="layui-form layui-form-search">
+    <div class="layui-input-inline">
+        <input type="text"  class="layui-input " placeholder="种类名" name="word">
+    </div>
+    <button class="layui-btn layui-search" lay-submit lay-filter="search"><i class="layui-icon">&#xe615;</i>查询</button>
+    <div class="layui-inline">
+        <a  class="layui-btn layui-add" ><i class="layui-icon"></i>添加</a>
+    </div>
+</form>
+<div class="layui-form  data-table-Wrapper">
+    <a  onclick="tableReload()"></a>
+    <table  id="XcMaterialType" lay-filter="menu"></table>
+    <script type="text/html" id="operation">
+        <div class="operation">
+            <a  class="view" href="javascript:;"  lay-event="edit"> 编辑</a>
+            <a  class="view" href="javascript:;"  lay-event="upedit"> 下级分类</a>
+            <a  class="view" href="javascript:;"  lay-event="delete"> 删除</a>
+        </div>
+    </script>
+</div>
+<script src="../../layuiadmin/layui/layui.js"></script>
+<script type="text/javascript">
+    var tableIns;
+    layui.config({
+        base: '../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index','table','jquery'],function(){
+        var $ = layui.jquery
+            ,admin = layui.admin
+            ,table = layui.table
+            ,form = layui.form;
+        var page = 1;
+
+
+        tableIns = table.render({
+            elem: '#XcMaterialType',
+            height: 'full-100', //容器高度
+            url: '/sort/queryFirstInfo',
+            page: true,
+            limit:20,
+            cellMinWidth: 80,
+            totalRow: true,//开启合计行
+            id: 'menu',
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.status, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.data.records, //解析数据长度
+                    "data": res.data.rows //解析数据列表
+                };
+            },
+            response: {
+                statusCode: 200
+            },
+            cols: [[
+                {title: '序号',type:'numbers',align: 'center'},
+                {field: 'name', title: '种类名',unresize:true,align: 'center'},
+                {field: 'type', title: '分类等级',unresize:true,align: 'center',templet :function(d){
+                        if(d.type==1){
+                            return "一级分类"
+                        }
+                    }},
+                {field: 'slogan', title: '分类描述',unresize:true,align: 'center'},
+                {field: 'catImage', title: '种类图标',unresize:true,align: 'center',templet :function(d){
+                        return "<img src="+d.catImage+" alt='种类图标'>"
+                    }},
+                {field: 'sort', title: '分类排序',unresize:true,align: 'center'},
+                {title: '操作', toolbar: '#operation',unresize:true,align: 'center'},
+            ]],
+            done: function(res, curr, count) {
+
+            },
+            loading: true
+        });
+
+
+        //查询
+        form.on('submit(search)', function(data) {
+            console.log(data)
+            tableIns.reload({
+                where: data.field
+            });
+            return false;
+        });
+
+        //添加
+        $(".layui-add").click(function(){
+            layer.load();
+            var add=layer.open({
+                title: "添加",
+                type: 2,
+                shade: 0.4,
+                content: 'add.html',
+                area: ['100%', '100%'],
+                shadeClose: true,
+                cancel :function(){
+                    tableIns.reload({})
+                },
+                success: function(layero, index){
+                    layer.closeAll('loading');
+                }
+            });
+        })
+
+        //监听工具条
+        table.on('tool(menu)', function(obj){
+            var data = obj.data;
+            var id=data.id;
+            if(obj.event === 'edit'){
+                layer.load();
+                var index=layer.open({
+                    title: "编辑",
+                    type: 2,
+                    shade: 0.4,
+                    content: '#(currentURL)/edit/'+id,
+                    area: ['100%', '100%'],
+                    shadeClose: true,
+                    cancel :function(){
+                        tableIns.reload({})
+                    },
+                    success: function(layero, index){
+                        layer.closeAll('loading');
+                    }
+                });
+
+            }else if(obj.event === 'upedit'){
+                layer.load();
+                var index=layer.open({
+                    title: "设置二级分类",
+                    type: 2,
+                    shade: 0.4,
+                    content: '#(currentURL)/upindex?upId='+id,
+                    area: ['100%', '100%'],
+                    shadeClose: true,
+                    cancel :function(){
+                        tableIns.reload({})
+                    },
+                    success: function(layero, index){
+                        layer.closeAll('loading');
+                    }
+                });
+            }
+            else if(obj.event === 'delete'){
+                layer.confirm('确认要删除吗？', {
+                    btn : [ '确定', '取消' ]
+                }, function(index) {
+                    $.ajax({
+                        type:'get',
+                        url:'#(currentURL)/delete/'+id,
+                        success:function(msg){
+                            obj.del();
+                            layer.msg("删除成功", {time: 1000});
+                            tableIns.reload();
+                        }
+                    })
+                });
+            }
+        })
+
+    })
+    function tableReload(){
+        tableIns.reload({});
+    }
+</script>
+</body>
+</html>
