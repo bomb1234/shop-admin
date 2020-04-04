@@ -6,13 +6,21 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="shop-admin-mapper" />
-        <module name="shop-admin-service" />
-        <module name="shop-admin-pojo" />
         <module name="shop-admin-common" />
         <module name="shop-admin-controller" />
+        <module name="shop-admin-mapper" />
+        <module name="shop-admin-pojo" />
+        <module name="shop-admin-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="shop-admin" target="1.8" />
+      <module name="shop-admin-common" target="1.8" />
+      <module name="shop-admin-controller" target="1.8" />
+      <module name="shop-admin-mapper" target="1.8" />
+      <module name="shop-admin-pojo" target="1.8" />
+      <module name="shop-admin-service" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
